@@ -1,0 +1,425 @@
+/* ============================================================
+   版本 01 · 爆炸撞色 —— 日式波普朋克 / 运动潮牌
+   ------------------------------------------------------------
+   三色体系：Mikasa 亮黄 + 排球蓝 + 纯黑，大面积纯色块高对比撞击
+   底色保留极简留白，但铺满 3.4% 的斜向粗线制造底噪与动势
+   卡片像贴纸「啪」地贴上：2.5px 黑粗框 + 硬投影 + 右下角夸张斜切
+   排版故意错位 5px，卡片按状态伸缩形成瀑布流
+   ============================================================ */
+
+body[data-theme="boom"] {
+    /* ---------- 三色 ---------- */
+    --yellow: #FFD400;        /* Mikasa 亮黄 */
+    --blue:   #0057B8;        /* 排球蓝 */
+    --ink:    #0A0A0A;        /* 纯黑 */
+    --paper:  #FBFAF7;        /* 留白底 */
+
+    /* ---------- 中性 ---------- */
+    --bg: var(--paper);
+    --surface: #FFFFFF;
+    --text: var(--ink);
+    --text-dim: #6E6E68;
+    --line: rgba(10, 10, 10, .16);
+    --line-strong: var(--ink);
+
+    /* 状态：一律用三色里的纯色块，不引入第四色 */
+    --live: var(--blue);
+    --live-fg: #FFFFFF;
+    --live-soft: rgba(0, 87, 184, .1);
+    --win: var(--ink);
+    --win-soft: rgba(10, 10, 10, .06);
+    --upcoming: #B4B2AB;
+
+    /* base.css 中以 --accent 作为强调色的默认规则，统一指向排球蓝 */
+    --accent: #0057B8;
+    --accent-fg: #FFFFFF;
+    --accent-soft: rgba(0, 87, 184, .1);
+
+    /* ---------- 头部 / 分组 ---------- */
+    --header-bg: rgba(251, 250, 247, .93);
+    --header-border: 3px solid var(--ink);
+    --day-bg: rgba(251, 250, 247, .96);
+    --day-border: 3px solid var(--ink);
+
+    /* ---------- 卡片：贴纸感 ---------- */
+    --card-bg: #FFFFFF;
+    --card-border: 2.5px solid var(--ink);
+    --card-radius: 0;
+    --card-pad: 26px 28px 30px;
+    --card-shadow: none;
+    --card-hover-transform: translate(-2px, -3px);
+    --card-hover-shadow: none;
+    --dot-border: var(--ink);
+
+    /* ---------- 字体层级 ---------- */
+    --title-size: 2.8rem;
+    --title-spacing: -.02em;
+    --day-size: 1.7rem;
+
+    /* 标题专用：黑体/展示级字族优先，中文回退到系统黑体
+       （不能改 --font-display，那是正文字体，调重会波及全站） */
+    --font-title: "Arial Black", "Arial Bold", Impact, Haettenschweiler,
+                  "PingFang SC", "Source Han Sans SC", "Noto Sans SC",
+                  "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+
+    --font-display: "Helvetica Neue", Helvetica, Arial,
+                    "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-score: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --score-size: 4rem;
+    --score-fg: #B4B2AB;
+
+    /* 比分中间的两个方块 */
+    --sep-size: 13px;
+    --sep-bg: var(--blue);
+    --sep-offset: 5px;
+
+    /* ---------- 小控件 ---------- */
+    --set-bg: #FFFFFF;
+    --set-border: 2px solid var(--ink);
+    --set-win-bg: var(--yellow);
+    --radius-sm: 0;
+
+    --btn-border: 2.5px solid var(--ink);
+    --btn-radius: 0;
+    --btn-bg: transparent;
+    --btn-fg: var(--ink);
+
+    --chip-bg: transparent;
+    --chip-fg: var(--ink);
+    --chip-radius: 0;
+
+    --badge-radius: 0;
+    --badge-border: 2.5px solid var(--ink);
+    --badge-fg: var(--text-dim);
+    --badge-bg: transparent;
+
+    /* ---------- 开场动画配色 ---------- */
+    --intro-bg: var(--paper);
+    --intro-tip: rgba(10, 10, 10, .3);
+    --ball-bg: var(--yellow);
+    --ball-ink: var(--ink);
+    --ball-accent: var(--blue);
+    --ball-shadow: rgba(0, 87, 184, .32);
+    --ripple-1: var(--blue);
+    --ripple-2: var(--yellow);
+    --ripple-3: var(--ink);
+
+    /* ---------- 淘汰树 ---------- */
+    --bk-card-w: 140px;
+    --bk-card-w-1: 126px;
+    --bk-card-w-2: 148px;
+    --bk-card-w-3: 156px;
+    --bk-card-w-f: 172px;
+    --bk-band-gap: 74px;
+    --bk-mod-gap: 26px;
+    --bk-cut: 14px;
+    --bk-pad: 8px;
+
+    --bk-card-bg: #FFFFFF;
+    --bk-card-border: 2.5px solid var(--ink);
+    --bk-card-shadow: rgba(10, 10, 10, .14);
+    --bk-shadow-x: 5px;
+    --bk-shadow-y: 5px;
+
+    --bk-fg: var(--ink);
+    --bk-muted: #B4B2AB;
+    --bk-title-bg: var(--yellow);
+    --bk-title-fg: var(--ink);
+
+    --bk-line: var(--ink);
+    --bk-line-open: 4px;
+    --bk-line-won: 6px;
+
+    /* ---------- 荧光笔 ---------- */
+    --hl: var(--yellow);
+    --hl-fg: var(--ink);
+
+    --bk-node-a: var(--yellow);
+    --bk-node-b: var(--blue);
+    --bk-node-fg: var(--ink);
+
+    --bk-flag-h: 7px;
+}
+
+/* ---------- 背景：斜向粗线底噪（3.4%，缓慢漂移）+ 右上角淡黄光晕 ---------- */
+
+/* 光晕静止 */
+body[data-theme="boom"]::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 86% 4%, rgba(255, 212, 0, .055), transparent 44%);
+}
+
+/* 斜线条单独一层：向外扩一圈，位移时不会露出边界 */
+body[data-theme="boom"]::after {
+    content: "";
+    position: fixed;
+    inset: -140px;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(-38deg,
+            rgba(0, 87, 184, .034) 0 24px,
+            transparent 24px 76px);
+    animation: bgStripeDrift 6s linear infinite;
+    will-change: transform;
+}
+
+/* 竖向位移量 = 条纹周期 76px ÷ cos(38°) ≈ 96.45px，
+   正好走完一个循环，接缝处看不出跳变 */
+@keyframes bgStripeDrift {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(0, 96.45px, 0); }
+}
+
+/* 尊重系统的「减弱动态效果」设置 */
+@media (prefers-reduced-motion: reduce) {
+    body[data-theme="boom"]::after { animation: none; }
+}
+
+/* ---------- 头部 ---------- */
+body[data-theme="boom"] .site-header {
+    backdrop-filter: saturate(180%) blur(12px);
+}
+
+/* 标题包装层：建立层叠上下文，保证伪元素的负 z-index 不会沉到背景之下 */
+body[data-theme="boom"] .title-anim {
+    display: inline-block;
+    position: relative;
+    z-index: 0;
+}
+
+/* 倾斜只留 skew 一个来源：
+   中文用 font-style: italic 会触发合成的假斜体，和 skew 叠在一起就糊了 */
+body[data-theme="boom"] .title-block h1 {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    padding: 2px 6px;
+    font-family: var(--font-title);
+    font-size: var(--title-size);
+    font-weight: 900;
+    letter-spacing: var(--title-spacing);
+    color: var(--ink);
+    /* 纯黑压亮黄 = 12:1，对比拉满；同色描边再补一层厚度 */
+    -webkit-text-stroke: 1px var(--ink);
+    /* 投影必须是浅色：深色投影会和黑字本体糊成一团。
+       白色在亮黄底上是「更亮的一层」，把字身和投影的边界分开 */
+    text-shadow: 4px 4px 0 var(--surface);
+    /* 纵向拉伸收敛到 1.10：1.14 形变偏大，会牺牲辨识度 */
+    transform: skewX(-5deg) scaleY(1.10);
+    transform-origin: left center;
+    z-index: 0;
+}
+
+/* 斜切亮黄底块：收窄、左右对称，不再歪出文字之外 */
+body[data-theme="boom"] .title-block h1::before {
+    content: "";
+    position: absolute;
+    inset: -5px -16px -7px -16px;
+    background: var(--yellow);
+    clip-path: polygon(12px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+    z-index: -2;
+}
+
+/* ---------- 公告：整块黑底 + 亮黄硬投影，做成独立的大模块 ---------- */
+/* box-shadow 会被 clip-path 裁掉，硬投影改用 drop-shadow */
+body[data-theme="boom"] .notice-inner {
+    background: var(--ink);
+    border: 3px solid var(--ink);
+    clip-path: polygon(0 0, 100% 0,
+                       100% calc(100% - 30px),
+                       calc(100% - 30px) 100%, 0 100%);
+    filter: drop-shadow(9px 9px 0 var(--yellow));
+}
+
+/* 「公告」标签：亮黄底黑字 + 歪斜贴纸 */
+body[data-theme="boom"] .notice-tag {
+    padding: 5px 16px 4px;
+    color: var(--ink);
+    background: var(--yellow);
+    transform: rotate(-4deg);
+}
+
+body[data-theme="boom"] .notice-label {
+    color: var(--yellow);
+    opacity: .55;
+}
+
+body[data-theme="boom"] .notice-text {
+    color: var(--paper);
+    letter-spacing: -.012em;
+}
+/* 首行再加重一档，做出标题感 */
+body[data-theme="boom"] .notice-text::first-line {
+    font-size: 1.16em;
+}
+
+/* ---------- 卡片：贴纸 + 夸张斜切 ---------- */
+body[data-theme="boom"] .match {
+    border: var(--card-border);
+    border-radius: 0;
+    /* 硬投影跟随斜切轮廓（box-shadow 会被 clip-path 裁掉，故用 drop-shadow） */
+    filter: drop-shadow(6px 6px 0 var(--ink));
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% calc(100% - 36px),
+        calc(100% - 36px) 100%,
+        0 100%
+    );
+    transition: transform .18s ease, filter .18s ease;
+}
+body[data-theme="boom"] .match:hover {
+    transform: translate(-2px, -3px);
+    filter: drop-shadow(9px 10px 0 var(--ink));
+    box-shadow: none;
+}
+
+/* 卡片按状态伸缩，形成错落的瀑布流 */
+body[data-theme="boom"] .match[data-status="upcoming"] { padding-bottom: 26px; }
+
+/* ---------- 元信息行 ---------- */
+body[data-theme="boom"] .match-top {
+    gap: 9px;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+body[data-theme="boom"] .match-time {
+    color: var(--ink);
+    font-size: .84rem;
+    font-weight: 900;
+    letter-spacing: .01em;
+    font-variant-numeric: tabular-nums;
+}
+
+body[data-theme="boom"] .match-court { color: var(--blue); }
+
+body[data-theme="boom"] .match-date {
+    padding: 3px 10px 2px;
+    color: var(--ink);
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    font-size: .78rem;
+    letter-spacing: .02em;
+    transform: rotate(-2deg);
+}
+
+body[data-theme="boom"] .match-week {
+    color: var(--blue);
+}
+
+/* ---------- 队名：干净，不抢比分 ---------- */
+body[data-theme="boom"] .team-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -.016em;
+    color: var(--ink);
+}
+body[data-theme="boom"] .team.is-winner .team-name {
+    font-weight: 900;
+}
+
+/* ---------- 比分：绝对的视觉核心，粗体斜字 ---------- */
+body[data-theme="boom"] .score {
+    gap: 11px;
+    font-size: var(--score-size);
+    font-style: italic;
+    font-weight: 900;
+    line-height: .88;
+    letter-spacing: -.052em;
+    /* 故意下沉 3px，与队名形成错位 */
+    transform: translateY(3px);
+}
+
+body[data-theme="boom"] .score-num {
+    color: var(--upcoming);          /* 默认：输家 / 待定，浅灰 */
+}
+body[data-theme="boom"] .score-num.is-winner {
+    color: var(--ink);               /* 赢家：纯黑 */
+}
+
+/* 中间的排球蓝几何方块，第二个横移 5px */
+body[data-theme="boom"] .score-sep {
+    gap: 9px;
+    padding: 0 4px;
+}
+body[data-theme="boom"] .score-sep i {
+    background: var(--blue);
+    border: 2px solid var(--ink);
+    width: var(--sep-size);
+    height: var(--sep-size);
+}
+body[data-theme="boom"] .score-sep i:last-child {
+    transform: translateX(var(--sep-offset));
+}
+
+/* ---------- 局分方块 ---------- */
+body[data-theme="boom"] .match-sets {
+    /* 与比分、队名形成 5px 横向错位 */
+    transform: translateX(5px);
+}
+
+body[data-theme="boom"] .set {
+    padding: 4px 11px;
+    font-size: .74rem;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: .02em;
+    color: var(--ink);
+    background: var(--set-bg);
+    border: var(--set-border);
+    border-radius: 0;
+}
+/* 胜局：实心 Mikasa 亮黄 + 黑字 */
+body[data-theme="boom"] .set.is-win {
+    color: var(--ink);
+    background: var(--set-win-bg);
+    border-color: var(--ink);
+}
+/* ---------- 状态标签 ---------- */
+body[data-theme="boom"] .status-badge {
+    padding: 4px 13px;
+    font-size: .68rem;
+    font-weight: 900;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--badge-fg);
+    background: var(--badge-bg);
+    border: var(--badge-border);
+    border-radius: 0;
+}
+/* 未开始：细黑线框 */
+body[data-theme="boom"] .match[data-status="upcoming"] .status-badge {
+    border-width: 2px;
+    border-color: rgba(10, 10, 10, .22);
+}
+/* 已结束：纯黑反白块 */
+body[data-theme="boom"] .match[data-status="finished"] .status-badge {
+    color: #FFFFFF;
+    background: var(--ink);
+    border-color: var(--ink);
+}
+/* ---------- 备注 ---------- */
+body[data-theme="boom"] .match-note {
+    font-size: .74rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: var(--blue);
+}
+
+/* ---------- 页脚 ---------- */
+body[data-theme="boom"] .site-footer {
+    border-top: 3px solid var(--ink);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}

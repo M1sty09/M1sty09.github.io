@@ -1,0 +1,34 @@
+{
+    "pageTitle": "排球赛程",
+    "dataUrl": "",
+    "autoRefresh": 0,
+    "notice": "",
+    "footerNote": "",
+    "views": {
+        "bracket": "淘汰树",
+        "list": "赛程表"
+    },
+    "statusText": {
+        "upcoming": "未开始",
+        "finished": "已结束"
+    },
+    "weekdays": [
+        "周日",
+        "周一",
+        "周二",
+        "周三",
+        "周四",
+        "周五",
+        "周六"
+    ],
+    "text": {
+        "loading": "正在加载赛程数据…",
+        "empty": "暂无比赛安排。",
+        "bye": "轮空",
+        "byeAdvance": "直接晋级",
+        "winnerOf": "胜者",
+        "loserOf": "负者",
+        "seatUnit": "位",
+        "noData": "赛程数据加载失败。若用 file:// 直接打开，请改用本地服务器（python -m http.server）。"
+    }
+}

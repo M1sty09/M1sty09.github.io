@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>赛程数据管理</title>
+    <link rel="icon" type="image/svg+xml" href="img/volleyball.svg">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <span class="brand">赛程数据管理</span>
+
+        <button class="btn ghost small" id="storeBtn" type="button">数据源：本地文件</button>
+
+        <span class="spacer"></span>
+
+        <span class="dirty is-clean" id="dirty">全部已保存</span>
+        <button class="btn ghost" id="reloadBtn">放弃改动</button>
+        <button class="btn primary" id="saveBtn" disabled>保存</button>
+        <a class="link" href="index.html" target="_blank" rel="noopener">打开前台 ↗</a>
+    </header>
+
+    <main id="view">
+        <div class="wrap"><div class="empty">加载中…</div></div>
+    </main>
+
+    <footer class="footerbar">
+        <span class="spacer"></span>
+        <span id="hint"></span>
+    </footer>
+
+    <!-- 数据源设置 -->
+    <div class="modal" id="storeModal" hidden>
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="storeTitle">
+            <h2 id="storeTitle">数据源</h2>
+            <p class="modal-hint">
+                本地开着 <code>node server.js</code> 时选「本地文件」；
+                部署到 GitHub Pages 后选「GitHub 仓库」，保存会直接提交到你仓库里的 JSON。
+            </p>
+
+            <label class="field">
+                <span>写入方式</span>
+                <select id="storeMode">
+                    <option value="auto">自动（有 server.js 就用本地）</option>
+                    <option value="local">本地文件（server.js）</option>
+                    <option value="github">GitHub 仓库</option>
+                </select>
+            </label>
+
+            <div id="storeGh">
+                <label class="field">
+                    <span>GitHub 用户名 / 组织</span>
+                    <input type="text" id="storeOwner" placeholder="weinayuan" autocomplete="off">
+                </label>
+                <label class="field">
+                    <span>仓库名</span>
+                    <input type="text" id="storeRepo" placeholder="volleyball-schedule" autocomplete="off">
+                </label>
+                <label class="field">
+                    <span>分支</span>
+                    <input type="text" id="storeBranch" placeholder="main" autocomplete="off">
+                </label>
+                <label class="field">
+                    <span>JSON 所在目录</span>
+                    <input type="text" id="storeDir" placeholder="data" autocomplete="off">
+                </label>
+                <label class="field">
+                    <span>Personal Access Token</span>
+                    <input type="password" id="storeToken" placeholder="github_pat_..." autocomplete="off">
+                </label>
+                <p class="modal-note">
+                    Token 只存在这台电脑的浏览器里（localStorage），请给最小的
+                    <code>Contents: Read and write</code> 权限。
+                </p>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn ghost" id="storeCancel" type="button">取消</button>
+                <button class="btn primary" id="storeSave" type="button">保存并重载</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toasts" id="toasts"></div>
+
+    <script src="js/store.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

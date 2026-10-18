@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>排球赛程</title>
+    <link rel="icon" type="image/svg+xml" href="img/volleyball.svg">
+
+    <!-- 基础布局 -->
+    <link rel="stylesheet" href="css/base.css">
+    <!-- 淘汰树 -->
+    <link rel="stylesheet" href="css/bracket.css">
+    <!-- 开场动画 -->
+    <link rel="stylesheet" href="css/intro.css">
+    <!-- 主题：01 爆炸撞色 -->
+    <link rel="stylesheet" href="css/theme-01-boom.css">
+</head>
+
+<body data-theme="boom" class="is-intro">
+
+    <!-- 开场动画层 -->
+    <div id="intro" class="intro">
+        <div class="intro-stage">
+            <div class="intro-entry">
+                <div class="intro-impact">
+                    <svg class="intro-ball" viewBox="0 0 100 100" aria-hidden="true">
+                        <defs>
+                            <clipPath id="volleyball-clip">
+                                <circle cx="50" cy="50" r="45"/>
+                            </clipPath>
+                        </defs>
+                        <circle class="ball-base" cx="50" cy="50" r="45"/>
+                        <!-- 三条弧线一并纳入裁剪：其端点坐标落在球面之外，
+                             不裁剪会在球外露出 stroke-linecap 圆头（黑点 Bug） -->
+                        <g clip-path="url(#volleyball-clip)">
+                            <path class="ball-piece" d="M 64 4 C 38 32, 38 68, 64 96 L 100 96 L 100 4 Z"/>
+                            <path class="ball-line" d="M 15 26 C 41 42, 41 58, 15 74"/>
+                            <path class="ball-line" d="M 64 4 C 38 32, 38 68, 64 96"/>
+                            <path class="ball-line" d="M 13 82 C 45 70, 73 58, 87 33"/>
+                        </g>
+                        <circle class="ball-outline" cx="50" cy="50" r="45"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="intro-ripples">
+                <span class="i-ring i-ring-1"></span>
+                <span class="i-ring i-ring-2"></span>
+                <span class="i-ring i-ring-3"></span>
+                <span class="i-shard i-shard-1"></span>
+                <span class="i-shard i-shard-2"></span>
+                <span class="i-shard i-shard-3"></span>
+                <span class="i-shard i-shard-4"></span>
+                <span class="i-shard i-shard-5"></span>
+                <span class="i-shard i-shard-6"></span>
+                <span class="i-block i-block-1"></span>
+                <span class="i-block i-block-2"></span>
+                <span class="i-block i-block-3"></span>
+            </div>
+        </div>
+        <div class="intro-tip">点击跳过</div>
+    </div>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="title-block">
+                <div class="title-anim">
+                    <h1 id="tournamentName">加载中…</h1>
+                </div>
+            </div>
+
+            <div class="view-switch" id="viewSwitch" hidden>
+                <button type="button" class="view-btn" data-view="bracket">淘汰树</button>
+                <button type="button" class="view-btn" data-view="list">分组赛</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 公告栏：独立模块，文字来自 data/site.json 的 notice 字段，留空则整块隐藏 -->
+    <section id="noticeBar" class="notice-panel" hidden>
+        <div class="notice-inner">
+            <div class="notice-head">
+                <span class="notice-tag">公告</span>
+                <span class="notice-label">NOTICE</span>
+            </div>
+            <p class="notice-text" id="noticeText"></p>
+        </div>
+    </section>
+
+    <main id="schedule" class="schedule"></main>
+
+    <footer class="site-footer">
+        <span id="footerNote"></span>
+    </footer>
+
+    <!-- 供 zine 版使用的粗糙纸边滤镜 -->
+    <svg width="0" height="0" aria-hidden="true" style="position:absolute;visibility:hidden">
+        <filter id="rough-edge">
+            <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="5"
+                               xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+    </svg>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

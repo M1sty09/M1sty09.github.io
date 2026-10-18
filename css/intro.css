@@ -1,0 +1,303 @@
+/* ============================================================
+   开场动画（随 01 爆炸撞色版本启用）
+   ------------------------------------------------------------
+   时序：先慢后快，落定瞬间有「啪」的顿感
+     0.00s → 1.05s  排球从画面外飘入并旋转（慢）
+     1.05s → 1.47s  落定冲击：scale 1 → 1.28 → 0.9 → 1.06 → 1
+     1.05s → 2.05s  三层同心圆环涟漪依次向外推开
+     1.05s → 1.75s  斜切碎片向外飞散
+     1.10s → 2.00s  拼贴色块向外扩散
+     1.15s → 1.65s  背景色块铺开
+     1.30s → 1.80s  标题错位拼合
+     1.45s → 2.10s  赛程卡片依次弹入
+     2.15s          动画层淡出，交还控制权
+   ============================================================ */
+
+/* ---------- 覆盖层 ---------- */
+.intro {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    background: var(--intro-bg, #0A0A0A);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.intro[hidden] { display: none; }
+
+/* 淡出收尾 */
+.intro.is-done {
+    animation: introOut .38s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes introOut {
+    to { opacity: 0; visibility: hidden; }
+}
+
+/* 提示文字 */
+.intro-tip {
+    position: absolute;
+    bottom: 34px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .22em;
+    color: var(--intro-tip, rgba(255,255,255,.4));
+    text-transform: uppercase;
+    opacity: 0;
+    animation: introTipIn .5s ease-out 1.5s forwards;
+}
+
+@keyframes introTipIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ---------- 舞台 ---------- */
+.intro-stage {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    display: grid;
+    place-items: center;
+}
+
+/* ---------- 排球：飘入 + 旋转 ---------- */
+.intro-entry {
+    position: relative;
+    z-index: 3;
+    /* 依赖 both 的向后填充：delay 期间维持 0% 的隐藏态，避免提前显形 */
+    animation: introFloatIn 1.05s cubic-bezier(.2, .68, .25, 1) both;
+}
+
+@keyframes introFloatIn {
+    0% {
+        transform: translate(-48vw, -38vh) rotate(-660deg) scale(.4);
+        opacity: 0;
+    }
+    14% { opacity: 1; }
+    68% {
+        transform: translate(-5vw, -4vh) rotate(-105deg) scale(.92);
+    }
+    100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+/* ---------- 排球：落定冲击「啪」 ---------- */
+.intro-impact {
+    animation: introImpact .42s cubic-bezier(.28, 1.7, .38, 1) 1.05s forwards;
+}
+
+@keyframes introImpact {
+    0%   { transform: scale(1); }
+    26%  { transform: scale(1.3); }
+    50%  { transform: scale(.88); }
+    72%  { transform: scale(1.08); }
+    88%  { transform: scale(.98); }
+    100% { transform: scale(1); }
+}
+
+.intro-ball {
+    width: 130px;
+    height: 130px;
+    display: block;
+    filter: drop-shadow(0 6px 14px var(--ball-shadow, rgba(0,0,0,.45)));
+}
+
+.intro-ball .ball-base {
+    fill: var(--ball-bg, #FFFFFF);
+}
+
+.intro-ball .ball-piece {
+    fill: var(--ball-accent, #F2FF00);
+}
+
+.intro-ball .ball-line {
+    fill: none;
+    stroke: var(--ball-ink, #111111);
+    stroke-width: 6;
+    stroke-linecap: round;
+}
+
+.intro-ball .ball-outline {
+    fill: none;
+    stroke: var(--ball-ink, #111111);
+    stroke-width: 6;
+}
+
+/* ---------- 涟漪：同心圆环 ---------- */
+.intro-ripples {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.i-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 130px;
+    height: 130px;
+    margin: -65px 0 0 -65px;
+    border: 7px solid var(--ripple-1, #F2FF00);
+    border-radius: 50%;
+    opacity: 0;
+    animation: introRing .82s cubic-bezier(.15, .8, .28, 1) forwards;
+}
+
+.i-ring-1 { border-color: var(--ripple-1, #0057B8); animation-delay: 1.05s; }
+.i-ring-2 { border-color: var(--ripple-2, #FFD400); animation-delay: 1.17s; }
+.i-ring-3 { border-color: var(--ripple-3, #0A0A0A); animation-delay: 1.29s; }
+
+@keyframes introRing {
+    0%   { transform: scale(.16); opacity: 0; border-width: 9px; }
+    10%  { opacity: 1; }
+    100% { transform: scale(5.2); opacity: 0; border-width: 1px; }
+}
+
+/* ---------- 涟漪：斜切碎片 ---------- */
+.i-shard {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    opacity: 0;
+    animation: introShard .72s cubic-bezier(.18, .72, .28, 1) forwards;
+}
+
+/* 奇数：锐利三角形 */
+.i-shard-1,
+.i-shard-3,
+.i-shard-5 {
+    width: 38px;
+    height: 34px;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+/* 偶数：斜切长块 */
+.i-shard-2,
+.i-shard-4,
+.i-shard-6 {
+    width: 36px;
+    height: 13px;
+    clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+}
+
+.i-shard-1 { --dx: -300px; --dy: -70px;  --rot: -155deg; background: var(--ripple-1, #0057B8); animation-delay: 1.05s; }
+.i-shard-2 { --dx:  290px; --dy: -110px; --rot:  140deg; background: var(--ripple-2, #FFD400); animation-delay: 1.10s; }
+.i-shard-3 { --dx: -250px; --dy:  130px; --rot: -200deg; background: var(--ripple-3, #0A0A0A); animation-delay: 1.13s; }
+.i-shard-4 { --dx:  310px; --dy:  90px;  --rot:  185deg; background: var(--ripple-1, #0057B8); animation-delay: 1.16s; }
+.i-shard-5 { --dx:  -60px; --dy: -330px; --rot:  -95deg; background: var(--ripple-2, #FFD400); animation-delay: 1.08s; }
+.i-shard-6 { --dx:   80px; --dy:  320px; --rot:  105deg; background: var(--ripple-3, #0A0A0A); animation-delay: 1.20s; }
+
+@keyframes introShard {
+    0% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(.35);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1.15);
+        opacity: 0;
+    }
+}
+
+/* ---------- 涟漪：拼贴色块 ---------- */
+.i-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    opacity: 0;
+    /* 锐利斜切色块，不用圆角 */
+    clip-path: polygon(0 0, 100% 0, 100% 78%, 78% 100%, 0 100%);
+    animation: introBlock .9s cubic-bezier(.18, .72, .28, 1) forwards;
+}
+
+.i-block-1 { --dx: -220px; --dy: -190px; --rot: -50deg; background: var(--ripple-1, #0057B8); animation-delay: 1.10s; }
+.i-block-2 { --dx:  250px; --dy: -150px; --rot:  42deg; background: var(--ripple-2, #FFD400); animation-delay: 1.15s; }
+.i-block-3 { --dx: -180px; --dy:  230px; --rot: -65deg; background: var(--ripple-3, #0A0A0A); animation-delay: 1.20s; }
+
+@keyframes introBlock {
+    0% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(.2);
+        opacity: .95;
+    }
+    100% {
+        transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1);
+        opacity: 0;
+    }
+}
+
+/* ---------- 界面：被涟漪「推开」逐层展开 ---------- */
+body.is-intro .site-header,
+body.is-intro .notice-panel,
+body.is-intro .schedule,
+body.is-intro .site-footer { opacity: 0; }
+
+/* 背景色块铺开 */
+body.is-loaded .site-header {
+    animation: introHeader .48s cubic-bezier(.2, .8, .2, 1) 1.15s both;
+}
+
+@keyframes introHeader {
+    from { opacity: 0; transform: translateY(-100%); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 公告栏跟着日期条一起「啪」地拍进来（复用已有的 introCard，不新增 keyframe） */
+body.is-loaded .notice-bar {
+    animation: introCard .5s cubic-bezier(.2, 1.45, .38, 1) 1.36s both;
+}
+
+/* 标题错位拼合：作用在包装层，不影响各主题自身的 transform */
+body.is-loaded .title-anim {
+    animation: introTitleIn .38s cubic-bezier(.16, .9, .22, 1) 1.3s both;
+}
+
+@keyframes introTitleIn {
+    0%   { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateX(-16px); }
+    60%  { opacity: 1; }
+    100% { opacity: 1; clip-path: inset(0 -6% 0 0); transform: translateX(0); }
+}
+
+/* 日期分组 */
+body.is-loaded .day {
+    animation: introRise .45s cubic-bezier(.2, .8, .2, 1) both;
+}
+body.is-loaded .day:nth-child(1) { animation-delay: 1.4s; }
+body.is-loaded .day:nth-child(2) { animation-delay: 1.5s; }
+body.is-loaded .day:nth-child(3) { animation-delay: 1.6s; }
+body.is-loaded .day:nth-child(n+4) { animation-delay: 1.7s; }
+
+/* 赛程卡片依次弹入 */
+body.is-loaded .match {
+    animation: introCard .5s cubic-bezier(.2, 1.45, .38, 1) both;
+    animation-delay: calc(1.48s + var(--i, 0) * .045s);
+}
+
+@keyframes introCard {
+    0% {
+        opacity: 0;
+        transform: translate(18px, 22px) scale(.94) rotate(2.5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+}
+
+/* 动画结束后清除 animation，交还 hover 等交互态 */
+body.is-settled .site-header,
+body.is-settled .notice-panel,
+body.is-settled .day,
+body.is-settled .match,
+body.is-settled .title-anim {
+    animation: none;
+    opacity: 1;
+}
