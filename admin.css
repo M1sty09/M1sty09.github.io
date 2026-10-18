@@ -1,0 +1,725 @@
+/* ============================================================
+   数据管理页样式
+   与前台同一套撞色语言：亮黄 #FFD400 + 排球蓝 #57A0FF + 纯黑
+   ============================================================ */
+
+:root {
+    --bg: #14150f;
+    --panel: #1b1d16;
+    --panel-2: #22251c;
+    --line: #33362b;
+    --fg: #eceae2;
+    --dim: #94998b;
+    --yellow: #ffd400;
+    --blue: #57a0ff;
+    --red: #ff6b5e;
+    --green: #6ddf9c;
+    --radius: 10px;
+    --mono: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 14px/1.6 system-ui, "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+/* ---------- 顶栏 ---------- */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 12px 22px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+}
+
+.brand {
+    font-size: .95rem;
+    font-weight: 900;
+    letter-spacing: .04em;
+}
+.brand::before {
+    content: "";
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    margin-right: 9px;
+    background: var(--yellow);
+    transform: skewX(-14deg) translateY(-1px);
+}
+
+.spacer { flex: 1; }
+
+.dirty {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--red);
+}
+.dirty.is-clean { color: var(--dim); }
+
+/* ---------- 按钮 ---------- */
+
+.btn {
+    padding: 7px 15px;
+    font: inherit;
+    font-size: .84rem;
+    font-weight: 700;
+    color: var(--fg);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color .15s, transform .12s, opacity .15s;
+}
+.btn:hover { border-color: var(--dim); }
+.btn:active { transform: translateY(1px); }
+.btn.primary {
+    color: #14150f;
+    background: var(--yellow);
+    border-color: var(--yellow);
+}
+.btn.ghost { background: transparent; }
+.btn.danger { color: var(--red); border-color: rgba(255, 107, 94, .4); }
+.btn.small { padding: 4px 10px; font-size: .78rem; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+a.link {
+    color: var(--blue);
+    font-size: .8rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+a.link:hover { text-decoration: underline; }
+
+/* ---------- 主体 ---------- */
+
+main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px;
+}
+
+.wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+/* 公告 / 比分两块，块之间一条实线 */
+.sec {
+    padding-top: 18px;
+    margin-bottom: 22px;
+    border-top: 1px solid var(--line);
+}
+.sec:first-of-type {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.section-head h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 900;
+    letter-spacing: .02em;
+}
+.section-head p {
+    margin: 0;
+    font-size: .8rem;
+    color: var(--dim);
+}
+
+/* ---------- 工具条 ---------- */
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.field > span {
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    color: var(--dim);
+    text-transform: uppercase;
+}
+
+input, select, textarea {
+    padding: 6px 9px;
+    font: inherit;
+    font-size: .85rem;
+    color: var(--fg);
+    background: #0f100c;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    outline: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--yellow); }
+input[type="color"] {
+    padding: 2px;
+    width: 42px;
+    height: 30px;
+    cursor: pointer;
+}
+input[type="number"] { width: 62px; text-align: center; font-variant-numeric: tabular-nums; }
+textarea { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; resize: vertical; }
+
+/* ---------- 卡片 ---------- */
+
+.card {
+    padding: 14px 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+}
+.card.is-finished { border-left: 3px solid var(--green); }
+
+/* ---------- 状态按钮（比下拉框直观） ---------- */
+
+.seg {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    background: #0f100c;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+}
+.seg-btn {
+    padding: 4px 13px;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 800;
+    color: var(--dim);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color .15s, background .15s;
+}
+.seg-btn:hover { color: var(--fg); }
+.seg-btn.is-active { color: #14150f; background: #7d8271; }
+.seg-btn.is-active[data-v="finished"] { background: var(--green); }
+
+.card-top {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--line);
+}
+
+.vs {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+}
+
+.vs select { width: 100%; }
+
+/* 对阵固定，管理页只显示队名，不再给下拉框 */
+.vs .side {
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: -.01em;
+}
+.vs .side.home { text-align: right; }
+.vs .side.away { text-align: left; }
+
+/* 大比分：两个输入框手填 */
+.score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 104px;
+}
+.score-edit {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+.score-edit input[type="number"] {
+    width: 46px;
+    padding: 2px 4px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 900;
+}
+.score-edit .colon { color: var(--dim); }
+.score small {
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: var(--dim);
+}
+
+/* 晋级：三个按钮手选 —— 整块提亮，让人一眼看见 */
+.winner-field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0 2px;
+    padding: 9px 12px;
+    background: rgba(255, 212, 0, .09);
+    border: 1px solid rgba(255, 212, 0, .4);
+    border-radius: var(--radius);
+}
+.winner-field > span {
+    min-width: 42px;
+    font-size: .82rem;
+    font-weight: 900;
+    letter-spacing: .14em;
+    color: var(--yellow);
+}
+.winner-field .seg {
+    gap: 4px;
+    padding: 3px;
+    background: #14150f;
+    border-color: rgba(255, 212, 0, .45);
+}
+.winner-field .seg-btn {
+    max-width: 190px;
+    padding: 6px 16px;
+    font-size: .86rem;
+    font-weight: 900;
+    color: var(--fg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.winner-field .seg-btn:hover { color: var(--yellow); }
+.winner-field .seg-btn.is-active {
+    color: #14150f;
+    background: var(--yellow);
+    box-shadow: 0 0 0 2px rgba(255, 212, 0, .25);
+}
+
+/* 状态只读标签：有比分数据 = 已结束 */
+.state-tag {
+    padding: 3px 12px 2px;
+    font-size: .72rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--dim);
+}
+.state-tag.is-finished {
+    color: #14150f;
+    background: var(--green);
+    border-color: var(--green);
+}
+.card-top .meta {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+.card-top .meta b { font-size: .95rem; }
+
+/* ---------- 轮空：不用填比分，直接晋级 ---------- */
+.card.is-bye { border-left: 3px solid var(--yellow); }
+
+.bye-tip {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 9px 12px;
+    margin: 10px 0;
+    background: rgba(255, 212, 0, .1);
+    border: 1px dashed rgba(255, 212, 0, .45);
+    border-radius: var(--radius);
+    font-size: .82rem;
+}
+.bye-tip b {
+    font-size: .74rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+    color: #14150f;
+    background: var(--yellow);
+    border-radius: 999px;
+    padding: 2px 10px 1px;
+}
+.bye-tip span { color: var(--fg); }
+
+.vs .side.is-bye {
+    font-weight: 700;
+    font-style: italic;
+    color: var(--dim);
+}
+
+/* 后台不做高亮，晋级靠手选的按钮表示 */
+
+.note-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+}
+.note-field > span {
+    min-width: 28px;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    color: var(--dim);
+}
+
+.score small {
+    display: block;
+    font-family: inherit;
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: var(--dim);
+}
+
+/* ---------- 局分 ---------- */
+
+.sets {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 0;
+}
+
+.set {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+.set .idx {
+    font-size: .68rem;
+    font-weight: 800;
+    color: var(--dim);
+}
+.set .colon { color: var(--dim); }
+.set .x {
+    padding: 0 3px;
+    font-size: .95rem;
+    color: var(--red);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+
+/* ---------- 表格（队伍） ---------- */
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table th {
+    padding: 8px 10px;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    color: var(--dim);
+    text-align: left;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line);
+}
+.table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba(51, 54, 43, .6);
+}
+.table tr:hover td { background: rgba(255, 255, 255, .02); }
+.tag-use {
+    font-size: .72rem;
+    color: var(--dim);
+}
+.swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 7px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 3px;
+    vertical-align: -2px;
+}
+
+/* ---------- 表单区（站点） ---------- */
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+.block {
+    padding: 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+}
+.block h3 {
+    margin: 0 0 12px;
+    font-size: .85rem;
+    font-weight: 900;
+    letter-spacing: .04em;
+}
+.block .field { margin-bottom: 10px; }
+.block textarea { width: 100%; min-height: 160px; }
+
+/* ---------- 按轮次分栏，栏间一条实线 ---------- */
+
+.round {
+    padding-top: 18px;
+    margin-bottom: 20px;
+    border-top: 1px solid var(--line);
+}
+.round:first-of-type {
+    padding-top: 0;
+    border-top: 0;
+}
+.round-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.round-head h3 {
+    margin: 0;
+    padding: 3px 12px;
+    font-size: .8rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+    color: #14150f;
+    background: var(--yellow);
+    border-radius: 999px;
+}
+.round-head span { font-size: .75rem; color: var(--dim); }
+
+.bracket-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 14px;
+}
+
+/* ---------- 底栏 ---------- */
+
+.footerbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 22px;
+    font-size: .8rem;
+    color: var(--dim);
+    background: var(--panel);
+    border-top: 1px solid var(--line);
+}
+.footerbar select { max-width: 320px; }
+
+/* ---------- 提示 ---------- */
+
+.toasts {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+.toast {
+    padding: 10px 16px;
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--fg);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--blue);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+    animation: toastIn .18s ease;
+}
+.toast.ok { border-left-color: var(--green); }
+.toast.err { border-left-color: var(--red); }
+.toast.out { opacity: 0; transform: translateY(6px); transition: .25s; }
+
+@keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.empty {
+    padding: 40px 0;
+    text-align: center;
+    font-size: .85rem;
+    color: var(--dim);
+}
+
+/* ---------- 数据源弹窗 ---------- */
+
+.btn.is-github {
+    color: var(--yellow);
+    border-color: rgba(255, 212, 0, .45);
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, .62);
+}
+.modal[hidden] { display: none; }
+
+.modal-box {
+    width: min(520px, 100%);
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 24px 26px 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+}
+
+.modal-box h2 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    font-weight: 900;
+    letter-spacing: .02em;
+}
+
+.modal-hint,
+.modal-note {
+    margin: 0 0 18px;
+    font-size: .78rem;
+    line-height: 1.7;
+    color: var(--dim);
+}
+.modal-note { margin: 10px 0 0; }
+
+.modal-hint code,
+.modal-note code {
+    padding: 1px 5px;
+    font-family: var(--mono);
+    font-size: .92em;
+    color: var(--yellow);
+    background: rgba(255, 212, 0, .1);
+    border-radius: 4px;
+}
+
+.field {
+    display: block;
+    margin-bottom: 12px;
+}
+.field > span {
+    display: block;
+    margin-bottom: 5px;
+    font-size: .74rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: var(--dim);
+}
+.field input,
+.field select {
+    width: 100%;
+    padding: 8px 11px;
+    font: inherit;
+    font-size: .84rem;
+    color: var(--fg);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+.field input:focus,
+.field select:focus {
+    outline: none;
+    border-color: var(--yellow);
+}
+.field input::placeholder { color: #5f6457; }
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+}
+
+@media (max-width: 640px) {
+    .topbar { padding: 10px 14px; gap: 8px; }
+    main { padding: 14px; }
+
+    /* 两队竖排：比分不再挤在中间那 104px 里，改为横排居中 */
+    .vs { grid-template-columns: 1fr; gap: 8px; }
+    .vs .side.home,
+    .vs .side.away { text-align: left; }
+    .vs .score {
+        min-width: 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .card { padding: 12px 13px; }
+    .card-top { gap: 8px; }
+
+    /* 晋级按钮整排放不下时换行，按钮平分一行更好点 */
+    .winner-field { flex-wrap: wrap; gap: 8px; }
+    .winner-field .seg { flex: 1 1 100%; }
+    .winner-field .seg-btn { max-width: none; flex: 1; min-height: 38px; }
+
+    /* 触屏：输入框和按钮加大到手指点得准的尺寸 */
+    .btn, .seg-btn, .toolbar input, .toolbar select,
+    .field input, .field select, input[type="number"], textarea {
+        min-height: 38px;
+    }
+
+    .modal { padding: 14px; }
+    .modal-box { padding: 18px 16px 16px; }
+    .modal-actions { justify-content: stretch; }
+    .modal-actions .btn { flex: 1; }
+}

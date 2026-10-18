@@ -1,0 +1,418 @@
+/* ============================================================
+   淘汰树 Bracket
+   ------------------------------------------------------------
+   竖向模块化：自上而下推进，决赛在最底部居中
+   每轮切成上下半区两个等宽模块，模块内 space-around 均分，
+   保证父节点天然居中于两个子节点，
+   连接线因此无需 JS 参与卡片定位，只需测量几何中心画 SVG
+   配色、线宽、尺寸全部走变量，由主题文件覆盖
+   ============================================================ */
+
+/* ---------- 外层：普通容器，不滚动 / 不拖拽 ---------- */
+.bk-wrap {
+    position: relative;
+    width: 100%;
+    padding: 4px 0 22px;
+}
+
+/* ---------- 底板：斜纹 + 极淡棋盘格节点 ---------- */
+/* 竖向：每一轮是一条横向模块带，自上而下推进，决赛在最底部居中 */
+.bk-board {
+    position: relative;
+    z-index: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bk-band-gap, 76px);
+    padding: 0 var(--bk-pad, 10px);
+}
+
+.bk-board::before {
+    content: "";
+    position: absolute;
+    inset: -24px -18px;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        /* 棋盘格节点 */
+        repeating-linear-gradient(0deg,
+            rgba(10, 10, 10, .035) 0 1px, transparent 1px 100%),
+        repeating-linear-gradient(90deg,
+            rgba(10, 10, 10, .035) 0 1px, transparent 1px 100%),
+        /* 斜纹底噪 */
+        repeating-linear-gradient(-38deg,
+            rgba(0, 87, 184, .035) 0 2px, transparent 2px 26px);
+    background-size: 52px 52px, 52px 52px, auto;
+}
+
+/* ---------- 连接线画布 ---------- */
+.bk-links {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.bk-links path {
+    fill: none;
+    stroke: var(--bk-line, #0A0A0A);
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+}
+
+/* 未决出：稍细 */
+.bk-link--open   { stroke-width: var(--bk-line-open, 4px); opacity: .82; }
+/* 已决出：粗黑「斩」线 */
+.bk-link--won    { stroke-width: var(--bk-line-won, 6px); }
+
+/* 已决出的连线再叠一条细黄线，做出从两名败者之间「斩」出去的收锋 */
+.bk-link--cut {
+    stroke: var(--bk-node-a, #FFD400);
+    stroke-width: 2.5px;
+}
+
+/* 交叉处的几何节点：菱形 / 平行四边形，不用圆点 */
+.bk-mark {
+    stroke: var(--bk-line, #0A0A0A);
+    stroke-width: 2.5px;
+}
+.bk-mark--a { fill: var(--bk-node-a, #FFD400); }
+.bk-mark--b { fill: var(--bk-node-b, #0057B8); }
+
+/* ---------- 每一轮（列） ---------- */
+.bk-round {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.bk-round-title {
+    margin: 0 0 14px;
+    padding: 6px 16px 5px;
+    align-self: flex-start;
+    font-size: .76rem;
+    font-weight: 900;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--bk-title-fg, #0A0A0A);
+    background: var(--bk-title-bg, #FFD400);
+    border: 2.5px solid var(--bk-line, #0A0A0A);
+    /* 斜切标签 */
+    clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+/* 模块容器：上半区 / 下半区各占一半等宽；决赛单独居中 */
+.bk-mods {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--bk-mod-gap, 26px);
+}
+
+/* 中轴：两个半区的对称线，也是整棵树汇聚的方向感 */
+.bk-round:not([data-final="1"]) .bk-mods::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -16px;
+    bottom: -16px;
+    border-left: 2px dashed rgba(10, 10, 10, .16);
+    pointer-events: none;
+}
+
+.bk-mod {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.bk-round[data-final="1"] .bk-mods { justify-content: center; }
+.bk-round[data-final="1"] .bk-mod  { flex: 0 0 auto; }
+
+/* 首轮标出号位来源，交代上下半区 */
+.bk-mod-tag {
+    display: block;
+    margin: 0 0 10px;
+    font-size: .62rem;
+    font-weight: 900;
+    letter-spacing: .14em;
+    color: var(--bk-muted, #8C8C86);
+}
+
+/* 模块内横向均分：等宽模块 + space-around
+   让父节点天然落在两个子节点正中，无需 JS 计算居中 */
+.bk-col {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.bk-slot {
+    flex: 0 0 auto;
+    width: var(--bk-card-w, 140px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 卡片宽度按轮次递进：首轮收窄以换取间距，越往决赛越大 */
+.bk-round[data-round="1"] .bk-slot   { width: var(--bk-card-w-1, 126px); }
+.bk-round[data-round="2"] .bk-slot   { width: var(--bk-card-w-2, 148px); }
+.bk-round[data-round="3"] .bk-slot   { width: var(--bk-card-w-3, 156px); }
+.bk-round[data-final="1"] .bk-slot   { width: var(--bk-card-w-f, 172px); }
+
+/* 首轮 16 强：八张卡并排，卡片本就窄；
+   内距与字号收紧一点，队名（如「高二（6）」）才放得进一行 */
+.bk-round[data-round="1"] .bk-card       { padding: 11px 9px 12px; }
+.bk-round[data-round="1"] .bk-card-hd    { margin-bottom: 7px; padding-bottom: 6px; gap: 6px; }
+.bk-round[data-round="1"] .bk-row        { padding: 7px 1px; gap: 6px; }
+.bk-round[data-round="1"] .bk-name       { font-size: .84rem; }
+.bk-round[data-round="1"] .bk-sc         { font-size: 1.16rem; min-width: 16px; }
+
+/* ---------- 对阵卡片 ---------- */
+.bk-card {
+    position: relative;
+    width: 100%;
+    background: var(--bk-card-bg, #FFFFFF);
+    border: var(--bk-card-border, 2.5px solid #0A0A0A);
+    padding: 9px 12px 11px;
+    /* 右下角夸张斜切 */
+    clip-path: polygon(0 0, 100% 0,
+                       100% calc(100% - var(--bk-cut, 18px)),
+                       calc(100% - var(--bk-cut, 18px)) 100%, 0 100%);
+    /* 硬投影：box-shadow 会被 clip-path 裁掉，故用 drop-shadow */
+    filter: drop-shadow(var(--bk-shadow-x, 5px) var(--bk-shadow-y, 5px) 0 var(--bk-card-shadow, rgba(10, 10, 10, .13)));
+    transition: transform .14s ease, filter .14s ease;
+}
+
+.bk-card:hover {
+    transform: translate(-2px, -3px);
+}
+
+/* 顶部：胜者亮黄粗边 */
+.bk-card[data-status="finished"]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: var(--bk-flag-h, 7px);
+    background: var(--bk-node-a, #FFD400);
+}
+
+/* 待定：虚线框 + 浅灰几何纹理 */
+.bk-card[data-tbd="1"] {
+    border-style: dashed;
+    background-image: repeating-linear-gradient(-45deg,
+        rgba(10, 10, 10, .05) 0 6px, transparent 6px 14px);
+}
+
+.bk-card[data-tbd="1"]::before { display: none; }
+
+/* 卡头：时间 / 场地 */
+.bk-card-hd {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1.5px solid rgba(10, 10, 10, .16);
+}
+
+.bk-time {
+    font-size: .72rem;
+    font-weight: 900;
+    letter-spacing: .06em;
+    font-variant-numeric: tabular-nums;
+}
+
+.bk-court {
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--bk-muted, #8C8C86);
+}
+
+/* 对阵行 */
+.bk-row {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 5px 1px;
+}
+
+.bk-row + .bk-row {
+    border-top: 1.5px solid rgba(10, 10, 10, .16);
+}
+
+/* 轮空：空的那半边整行留白，min-height 撑住与普通行一致的高度 */
+.bk-row--void { min-height: 1.3rem; }
+
+.bk-name {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    font-size: .92rem;
+    font-weight: 700;
+    letter-spacing: -.012em;
+    color: var(--bk-fg, #0A0A0A);
+    /* 队名一律单行：挤成两行既不好看，也让连接线对不齐 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bk-sc {
+    font-family: var(--font-score, "Helvetica Neue", Helvetica, Arial, sans-serif);
+    font-size: 1.3rem;
+    font-weight: 900;
+    line-height: 1;
+    min-width: 20px;
+    text-align: right;
+    color: var(--bk-muted, #B4B2AB);
+}
+
+/* 胜者：纯黑粗斜体数字 */
+.bk-row[data-outcome="win"] .bk-name {
+    font-weight: 900;
+    color: var(--bk-fg, #0A0A0A);
+}
+
+.bk-row[data-outcome="win"] .bk-sc {
+    color: var(--bk-fg, #0A0A0A);
+    font-style: italic;
+}
+
+/* 败者：整体压灰 + 黑色斜杠（淘汰感） */
+.bk-row[data-outcome="lose"] .bk-name,
+.bk-row[data-outcome="lose"] .bk-sc {
+    color: var(--bk-muted, #B4B2AB);
+    font-weight: 600;
+}
+
+.bk-row[data-outcome="lose"] .bk-name::after {
+    content: "";
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: 52%;
+    height: 3px;
+    background: var(--bk-line, #0A0A0A);
+    transform: rotate(-8deg);
+}
+
+/* 待定行 */
+.bk-row[data-outcome="tbd"] .bk-name {
+    color: var(--bk-muted, #B4B2AB);
+    font-style: italic;
+    font-weight: 600;
+}
+
+/* ---------- 对称布局：右半区镜像，决赛居中 ---------- */
+
+/* 下半区：斜切翻到左下角，硬投影反向，围绕中轴对称 */
+.bk-mod[data-side="R"] .bk-card {
+    clip-path: polygon(0 0, 100% 0, 100% 100%,
+                       var(--bk-cut, 18px) 100%,
+                       0 calc(100% - var(--bk-cut, 18px)));
+    filter: drop-shadow(calc(-1 * var(--bk-shadow-x, 5px)) var(--bk-shadow-y, 5px) 0 var(--bk-card-shadow, rgba(10, 10, 10, .13)));
+}
+
+.bk-mod[data-side="R"] .bk-mod-tag { text-align: right; }
+
+/* 决赛：整棵树的落点，加重描边 */
+.bk-round[data-final="1"] .bk-round-title {
+    align-self: center;
+    background: var(--bk-line, #0A0A0A);
+    color: var(--bk-node-a, #FFD400);
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+.bk-round[data-final="1"] .bk-card {
+    border-width: 3.5px;
+    border-color: var(--bk-node-a, #FFD400);
+}
+
+/* ---------- 视图切换 ---------- */
+.view-switch {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 7px 16px 6px;
+    font-size: .74rem;
+    font-weight: 900;
+    font-family: inherit;
+    letter-spacing: .12em;
+    color: var(--btn-fg, #0A0A0A);
+    background: var(--btn-bg, transparent);
+    border: var(--btn-border, 2.5px solid #0A0A0A);
+    border-radius: var(--btn-radius, 0);
+    cursor: pointer;
+    transform: rotate(-3deg);
+    transition: background .12s ease, color .12s ease, transform .12s ease;
+}
+
+.view-btn:hover { transform: rotate(-3deg) translate(-2px, -2px); }
+
+.view-btn.is-active {
+    color: var(--accent-fg, #FFFFFF);
+    background: var(--accent, #0057B8);
+    border-color: var(--accent, #0057B8);
+}
+
+.view-btn:focus-visible {
+    outline: 2px solid var(--accent, #0057B8);
+    outline-offset: 3px;
+}
+
+/* ---------- 入场：从左侧「拍」上来 ---------- */
+body.is-loaded .bk-round {
+    animation: bkColIn .5s cubic-bezier(.16, 1.1, .28, 1) both;
+}
+
+body.is-loaded .bk-round:nth-child(1) { animation-delay: 1.30s; }
+body.is-loaded .bk-round:nth-child(2) { animation-delay: 1.42s; }
+body.is-loaded .bk-round:nth-child(3) { animation-delay: 1.54s; }
+body.is-loaded .bk-round:nth-child(4) { animation-delay: 1.66s; }
+body.is-loaded .bk-round:nth-child(n+5) { animation-delay: 1.78s; }
+
+@keyframes bkColIn {
+    0% {
+        opacity: 0;
+        transform: translateY(22px) rotate(-1.5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+body.is-settled .bk-round { animation: none; opacity: 1; }
+
+/* ---------- 移动端：树本体维持原尺寸，改成横向滑动 ---------- */
+/* 卡片宽度和每轮张数都是固定的，硬压下去只会让队名被截掉、
+   连接线对不上；所以窄屏不动布局，改为把外层变成可横滑容器。
+   连线 SVG 画在 .bk-board 内部，viewBox 取的是 board 自己的
+   宽高，滑动发生在更外层的 .bk-wrap 上，两者互不影响，
+   坐标依然对齐，不用改 JS。 */
+@media (max-width: 860px) {
+    .bk-wrap {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        padding-bottom: 12px;
+    }
+    .bk-board {
+        /* 八张首轮卡 + 中轴间距 + 底板内距，留够一个最小值 */
+        min-width: var(--bk-min-w, 1060px);
+        /* 右侧余量：避免最后一张卡的硬投影被滚动容器裁掉 */
+        padding-right: 24px;
+    }
+}
