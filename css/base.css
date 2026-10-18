@@ -362,8 +362,11 @@ body {
     font-size: .74rem;
     font-weight: 700;
     letter-spacing: .05em;
+    line-height: 1.75;
     color: var(--text-dim, #777);
     border-top: var(--header-border, 1px solid #eee);
+    /* 允许 data/site.json 的 footerNote 用 \n 换行排多行署名 */
+    white-space: pre-line;
 }
 
 /* ---------- 响应式 ---------- */
