@@ -21,7 +21,25 @@
         "home": "t3",
         "away": "t4",
         "status": "upcoming",
-        "sets": []
+        "sets": [
+            {
+                "home": 1,
+                "away": 0
+            },
+            {
+                "home": 1,
+                "away": 0
+            },
+            {
+                "home": 1,
+                "away": 0
+            }
+        ],
+        "score": {
+            "home": 3,
+            "away": 0
+        },
+        "winner": "home"
     },
     {
         "id": "m03",
