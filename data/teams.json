@@ -9,8 +9,8 @@
     { "id": "t9",  "name": "高一（1）", "short": "11" },
     { "id": "t10", "name": "高二（3）", "short": "23" },
     { "id": "t11", "name": "高一（6）", "short": "16" },
-    { "id": "t12", "name": "高二VCE", "short": "2VCE" },
-    { "id": "t13", "name": "高二（5）", "short": "25" },
-    { "id": "t14", "name": "高二（2）", "short": "22" },
-    { "id": "t16", "name": "高一（2）", "short": "12" }
+    { "id": "t12", "name": "高一（2）", "short": "2VCE" },
+    { "id": "t13", "name": "高二VCE", "short": "25" },
+    { "id": "t14", "name": "高二（5）", "short": "22" },
+    { "id": "t16", "name": "高二（2）", "short": "12" }
 ]
