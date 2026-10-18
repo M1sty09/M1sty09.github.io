@@ -1,0 +1,45 @@
+/* ============================================================
+   管理页 · 移动端适配（≤640px）
+   ------------------------------------------------------------
+   同样全部包在 @media 里，在 admin.html 里于 admin.css 之后
+   加载；桌面端不受任何影响。
+   ============================================================ */
+
+@media (max-width: 640px) {
+    .topbar { padding: 10px 14px; gap: 8px; }
+    main    { padding: 14px; }
+    .wrap   { max-width: 100%; }
+
+    /* 两队竖排：比分不再挤在中间那 104px 里，改成横排居中 */
+    .vs { grid-template-columns: 1fr; gap: 8px; }
+    .vs .side.home,
+    .vs .side.away { text-align: left; }
+    .vs .score {
+        min-width: 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .card     { padding: 12px 13px; }
+    .card-top { gap: 8px; }
+
+    /* 晋级按钮：窄屏放不下就整行平分，更好点 */
+    .winner-field { flex-wrap: wrap; gap: 8px; }
+    .winner-field .seg { flex: 1 1 100%; }
+    .winner-field .seg-btn { max-width: none; flex: 1; min-height: 38px; }
+
+    /* 触屏：输入框和按钮加大到手指点得准的尺寸 */
+    .btn, .seg-btn,
+    .toolbar input, .toolbar select,
+    .field input, .field select,
+    input[type="number"], textarea {
+        min-height: 38px;
+    }
+
+    /* 弹窗在窄屏别顶出屏幕 */
+    .modal { padding: 14px; }
+    .modal-box { width: 100%; max-height: 86vh; padding: 18px 16px 16px; }
+    .modal-actions { justify-content: stretch; }
+    .modal-actions .btn { flex: 1; }
+}
