@@ -21,7 +21,25 @@
         "home": "t3",
         "away": "t4",
         "status": "upcoming",
-        "sets": []
+        "sets": [
+            {
+                "home": 15,
+                "away": 7
+            },
+            {
+                "home": 6,
+                "away": 15
+            },
+            {
+                "home": 8,
+                "away": 15
+            }
+        ],
+        "score": {
+            "home": 1,
+            "away": 2
+        },
+        "winner": "away"
     },
     {
         "id": "m03",
@@ -33,7 +51,21 @@
         "home": "t5",
         "away": "t6",
         "status": "upcoming",
-        "sets": []
+        "sets": [
+            {
+                "home": 15,
+                "away": 5
+            },
+            {
+                "home": 15,
+                "away": 11
+            }
+        ],
+        "score": {
+            "home": 2,
+            "away": 0
+        },
+        "winner": "home"
     },
     {
         "id": "m04",
@@ -45,7 +77,21 @@
         "home": "t7",
         "away": "t8",
         "status": "upcoming",
-        "sets": []
+        "sets": [
+            {
+                "home": 15,
+                "away": 7
+            },
+            {
+                "home": 15,
+                "away": 10
+            }
+        ],
+        "score": {
+            "home": 2,
+            "away": 0
+        },
+        "winner": "home"
     },
     {
         "id": "m05",
@@ -57,7 +103,21 @@
         "home": "t9",
         "away": "t10",
         "status": "upcoming",
-        "sets": []
+        "sets": [
+            {
+                "home": 10,
+                "away": 15
+            },
+            {
+                "home": 8,
+                "away": 15
+            }
+        ],
+        "score": {
+            "home": 0,
+            "away": 2
+        },
+        "winner": "away"
     },
     {
         "id": "m06",
