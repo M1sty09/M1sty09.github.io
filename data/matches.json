@@ -383,7 +383,11 @@
                 "away": 15
             }
         ],
-        "winner": "away"
+        "winner": "away",
+        "score": {
+            "home": 0,
+            "away": 2
+        }
     },
     {
         "id": "m16",
@@ -409,6 +413,10 @@
                 "away": 15
             }
         ],
-        "winner": "away"
+        "winner": "away",
+        "score": {
+            "home": 1,
+            "away": 2
+        }
     }
 ]
